@@ -56,21 +56,16 @@ def get_default_context():
     return {'year': year, 'fullname': fullname, 'email': email}
 
 
-def handle_license(name, user_context):
-    if name not in LICENSES:
-        raise ValueError("Unsuppport license: {0}".format(name))
-    env = Environment(loader=FileSystemLoader(LICENSES_DIR))
-    template = env.get_template(name)
-    context = get_default_context()
-    for key, value in user_context.items():
-        context[key] = value
-    return template.render(**context)
-
-
-def handle_header(name, user_context):
-    if name not in HEADERS:
-        raise ValueError("Unsuppport license header: {0}".format(name))
-    env = Environment(loader=FileSystemLoader(HEADERS_DIR))
+def generate_file(name, user_context, is_license):
+    if is_license == 0:
+        if name not in HEADERS:
+            raise ValueError(
+                "Unsuppport license header: {0}".format(name))
+        env = Environment(loader=FileSystemLoader(HEADERS_DIR))
+    else:
+        if name not in LICENSES:
+            raise ValueError("Unsuppport license: {0}".format(name))
+        env = Environment(loader=FileSystemLoader(LICENSES_DIR))
     template = env.get_template(name)
     context = get_default_context()
     for key, value in user_context.items():
@@ -90,9 +85,10 @@ def main():
     elif arguments['--list']:
         print ', '.join(LICENSES)
     elif arguments['header'] and arguments['LICENSE_NAME']:
-        print handle_header(arguments['LICENSE_NAME']+'-header', user_context)
+        license_header = arguments['LICENSE_NAME']+'-header'
+        print generate_file(license_header, user_context, 0)
     elif arguments['LICENSE_NAME']:
-        print handle_license(arguments['LICENSE_NAME'], user_context)
+        print generate_file(arguments['LICENSE_NAME'], user_context, 1)
     else:
         print __doc__
 
