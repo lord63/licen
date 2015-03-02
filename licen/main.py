@@ -9,8 +9,9 @@ Usage:
   licen header (-l | --list)
   licen LICENSE_NAME
   licen [-y YEAR] [-f FULLNAME] [-e EMAIL] LICENSE_NAME
-  licen header LICENSE_NAME
-  licen header [-y YEAR] [-f FULLNAME] [-e EMAIL] LICENSE_NAME
+  licen header LICENSE_HEADER
+  licen header [-y YEAR] [-f FULLNAME] [-e EMAIL] LICENSE_HEADER
+  licen --var NAME
   licen (-h | --help)
   licen (-V | --version)
 
@@ -35,9 +36,10 @@ import os
 from os import path
 from datetime import date
 import subprocess
+import string
 
 from docopt import docopt
-from jinja2 import FileSystemLoader, Environment
+from jinja2 import FileSystemLoader, Environment, meta
 
 
 ROOT = path.dirname(path.abspath(__file__))
@@ -73,6 +75,24 @@ def generate_file(name, user_context, is_license):
     return template.render(**context)
 
 
+def get_vars(name):
+    if 'header' in name:
+        env = Environment(loader=FileSystemLoader(HEADERS_DIR))
+    else:
+        env = Environment(loader=FileSystemLoader(LICENSES_DIR))
+    template_source = env.loader.get_source(env, name)[0]
+    parsed_content = env.parse(template_source)
+    variables = list(meta.find_undeclared_variables(parsed_content))
+    default_context = get_default_context()
+    result = ("The {0} template contains following "
+              "defaults:\n").format(string.upper(name))
+    for variable in variables:
+        result = result + "\t{0}: {1}\n".format(
+            variable,default_context[variable])
+    result = result + "You can overwrite them at your ease."
+    return result
+
+
 def main():
     arguments = docopt(__doc__, version=__version__)
     raw_context = {'year': arguments['-y'],
@@ -84,11 +104,12 @@ def main():
         print ', '.join(HEADERS)
     elif arguments['--list']:
         print ', '.join(LICENSES)
-    elif arguments['header'] and arguments['LICENSE_NAME']:
-        license_header = arguments['LICENSE_NAME']+'-header'
-        print generate_file(license_header, user_context, 0)
+    elif arguments['LICENSE_HEADER']:
+        print generate_file(arguments['LICENSE_HEADER'], user_context, 0)
     elif arguments['LICENSE_NAME']:
         print generate_file(arguments['LICENSE_NAME'], user_context, 1)
+    elif arguments['--var']:
+        print get_vars(arguments['NAME'])
     else:
         print __doc__
 
