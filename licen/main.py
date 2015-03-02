@@ -6,13 +6,16 @@ licen, generates license for you via command line
 
 Usage:
   licen (-l | --list)
+  licen header (-l | --list)
   licen LICENSE_NAME
   licen [-y YEAR] [-f FULLNAME] [-e EMAIL] LICENSE_NAME
+  licen header LICENSE_NAME
+  licen header [-y YEAR] [-f FULLNAME] [-e EMAIL] LICENSE_NAME
   licen (-h | --help)
   licen (-V | --version)
 
 Options:
-  -l --list     List all the support licenses.
+  -l --list     List all the support licenses or headers.
   -y YEAR       Specify the year.
   -f FULLNAME   Specify the owner's fullname.
   -e EMAIL      Specify the email.
@@ -38,8 +41,10 @@ from jinja2 import FileSystemLoader, Environment
 
 
 ROOT = path.dirname(path.abspath(__file__))
-TEMPLATE_DIR = path.join(ROOT, 'templates')
-LICENSES = sorted(os.walk(TEMPLATE_DIR).next()[2])
+LICENSES_DIR = path.join(ROOT, 'templates/licenses')
+HEADERS_DIR = path.join(ROOT, 'templates/headers')
+LICENSES = sorted(os.walk(LICENSES_DIR).next()[2])
+HEADERS = sorted(os.walk(HEADERS_DIR).next()[2])
 
 
 def get_default_context():
@@ -51,10 +56,21 @@ def get_default_context():
     return {'year': year, 'fullname': fullname, 'email': email}
 
 
-def handle_licenses(name, user_context):
+def handle_license(name, user_context):
     if name not in LICENSES:
         raise ValueError("Unsuppport license: {0}".format(name))
-    env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
+    env = Environment(loader=FileSystemLoader(LICENSES_DIR))
+    template = env.get_template(name)
+    context = get_default_context()
+    for key, value in user_context.items():
+        context[key] = value
+    return template.render(**context)
+
+
+def handle_header(name, user_context):
+    if name not in HEADERS:
+        raise ValueError("Unsuppport license header: {0}".format(name))
+    env = Environment(loader=FileSystemLoader(HEADERS_DIR))
     template = env.get_template(name)
     context = get_default_context()
     for key, value in user_context.items():
@@ -64,15 +80,19 @@ def handle_licenses(name, user_context):
 
 def main():
     arguments = docopt(__doc__, version=__version__)
-    if arguments['--list']:
+    raw_context = {'year': arguments['-y'],
+                   'fullname': arguments['-f'],
+                   'email': arguments['-e']}
+    user_context = {key: value for key, value in raw_context.items()
+                    if value is not None}
+    if arguments['--list'] and arguments['header']:
+        print ', '.join(HEADERS)
+    elif arguments['--list']:
         print ', '.join(LICENSES)
+    elif arguments['header'] and arguments['LICENSE_NAME']:
+        print handle_header(arguments['LICENSE_NAME']+'-header', user_context)
     elif arguments['LICENSE_NAME']:
-        raw_context = {'year': arguments['-y'],
-                       'fullname': arguments['-f'],
-                       'email': arguments['-e']}
-        user_context = {key: value for key, value in raw_context.items()
-                        if value is not None}
-        print handle_licenses(arguments['LICENSE_NAME'], user_context)
+        print handle_license(arguments['LICENSE_NAME'], user_context)
     else:
         print __doc__
 
