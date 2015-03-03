@@ -5,11 +5,8 @@
 licen, generates license for you via command line
 
 Usage:
-  licen (-l | --list)
-  licen header (-l | --list)
-  licen LICENSE_NAME
+  licen [header] (-l | --list)
   licen [-y YEAR] [-f FULLNAME] [-e EMAIL] LICENSE_NAME
-  licen header LICENSE_HEADER
   licen header [-y YEAR] [-f FULLNAME] [-e EMAIL] LICENSE_HEADER
   licen --var NAME
   licen (-h | --help)
@@ -20,16 +17,11 @@ Options:
   -y YEAR       Specify the year.
   -f FULLNAME   Specify the owner's fullname.
   -e EMAIL      Specify the email.
+  --var         List all the variables in the template.
   -h --help     Show the help message.
   -V --version  Show the version info.
 
 """
-
-__title__ = "licen"
-__version__ = "0.1.0"
-__author__ = "lord63"
-__license__ = "MIT"
-__copyright__ = "Copyright 2015 lord63"
 
 
 import os
@@ -40,6 +32,8 @@ import string
 
 from docopt import docopt
 from jinja2 import FileSystemLoader, Environment, meta
+
+from licen import __version__
 
 
 ROOT = path.dirname(path.abspath(__file__))
