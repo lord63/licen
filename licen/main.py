@@ -81,14 +81,22 @@ def get_vars(name):
         env = Environment(loader=FileSystemLoader(LICENSES_DIR))
     template_source = env.loader.get_source(env, name)[0]
     parsed_content = env.parse(template_source)
-    variables = list(meta.find_undeclared_variables(parsed_content))
+    variables = sorted(list(meta.find_undeclared_variables(parsed_content)))
+    return variables
+
+
+def print_vars(name):
+    variables = get_vars(name)
     default_context = get_default_context()
-    result = ("The {0} template contains following "
-              "defaults:\n").format(name.upper())
-    for variable in variables:
-        result = result + "\t{0}: {1}\n".format(
-            variable, default_context[variable])
-    result = result + "You can overwrite them at your ease."
+    if len(variables) == 0:
+        return "The {0} template don't need variables.".format(name.upper())
+    else:
+        result = ("The {0} template contains following "
+                  "defaults:\n").format(name.upper())
+        for variable in variables:
+            result = result + "\t{0}: {1}\n".format(
+                variable, default_context[variable])
+        result = result + "You can overwrite them at your ease."
     return result
 
 
@@ -115,7 +123,7 @@ def main():
         print(generate_file(arguments['LICENSE_NAME'],
                             context, 1))
     elif arguments['--var']:
-        print(get_vars(arguments['NAME']))
+        print(print_vars(arguments['NAME']))
     else:
         print(__doc__)
 
