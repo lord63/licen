@@ -60,7 +60,7 @@ def get_default_context():
     return {'year': year, 'fullname': fullname, 'email': email}
 
 
-def generate_file(name, user_context, is_license):
+def generate_file(name, context, is_license):
     if is_license == 0:
         if name not in HEADERS:
             raise ValueError(
@@ -71,9 +71,6 @@ def generate_file(name, user_context, is_license):
             raise ValueError("Unsuppport license: {0}".format(name))
         env = Environment(loader=FileSystemLoader(LICENSES_DIR))
     template = env.get_template(name)
-    context = get_default_context()
-    for (key, value) in user_context.items():
-        context[key] = value
     return template.render(**context)
 
 
@@ -102,6 +99,10 @@ def main():
                    'email': arguments['-e']}
     user_context = {key: value for (key, value) in raw_context.items()
                     if value is not None}
+    context = get_default_context()
+    # Overwrite the default value with user specified.
+    for (key, value) in user_context.items():
+        context[key] = value
 
     if arguments['--list'] and arguments['header']:
         print(', '.join(HEADERS))
@@ -109,10 +110,10 @@ def main():
         print(', '.join(LICENSES))
     elif arguments['LICENSE_HEADER']:
         print(generate_file(arguments['LICENSE_HEADER'],
-                            user_context, 0))
+                            context, 0))
     elif arguments['LICENSE_NAME']:
         print(generate_file(arguments['LICENSE_NAME'],
-                            user_context, 1))
+                            context, 1))
     elif arguments['--var']:
         print(get_vars(arguments['NAME']))
     else:
