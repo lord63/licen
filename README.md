@@ -14,6 +14,14 @@ A gif is worth than a thousand words.
 
 ![demo_gif][gif]
 
+In short, generate a licnese:
+
+    $ licen mit > LICENSE
+
+Generate a header:
+
+    $ licen header gpl-2.0-header > main.py
+
 Or get detailed help message from the terminal.
 
     $ licen -h
