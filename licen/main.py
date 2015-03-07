@@ -23,7 +23,6 @@ Options:
 
 """
 
-
 import os
 from os import path
 from datetime import date
@@ -47,13 +46,15 @@ def get_default_context():
     year = date.today().year
     try:
         fullname = subprocess.check_output(
-            'git config --get user.name'.split()).strip()
+            'git config --get user.name'.split()
+        ).strip().decode('utf-8')
     except:
         print("WARNING: Please configure your git.\n")
         fullname = getpass.getuser()
     try:
         email = subprocess.check_output(
-            'git config --get user.email'.split()).strip()
+            'git config --get user.email'.split()
+        ).strip().decode('utf-8')
     except:
         print("WARNING: Please configure your git.\n")
         email = "undefined"
