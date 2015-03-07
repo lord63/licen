@@ -2,7 +2,7 @@
 [![Latest Version][1]][2]
 [![Build Status][3]][4]
 
-Generate your license. Yet another [lice][3], but implement with Jinja.
+Generate your license. Yet another [lice][5], but implement with Jinja.
 
 ## Install
 
@@ -51,7 +51,7 @@ MIT.
 
 [1]: http://img.shields.io/pypi/v/licen.svg
 [2]: https://pypi.python.org/pypi/licen
-[3]: https://github.com/licenses/lice
 [3]: https://travis-ci.org/lord63/licen.svg
 [4]: https://travis-ci.org/lord63/licen
+[5]: https://github.com/licenses/lice
 [gif]: https://github.com/lord63/licen/blob/master/licen_demo.gif
