@@ -23,12 +23,11 @@ Options:
 
 """
 
-
 import os
 from os import path
 from datetime import date
 import subprocess
-import string
+import getpass
 
 from docopt import docopt
 from jinja2 import FileSystemLoader, Environment, meta
@@ -39,20 +38,30 @@ from licen import __version__
 ROOT = path.dirname(path.abspath(__file__))
 LICENSES_DIR = path.join(ROOT, 'templates/licenses')
 HEADERS_DIR = path.join(ROOT, 'templates/headers')
-LICENSES = sorted(os.walk(LICENSES_DIR).next()[2])
-HEADERS = sorted(os.walk(HEADERS_DIR).next()[2])
+LICENSES = sorted(os.listdir(LICENSES_DIR))
+HEADERS = sorted(os.listdir(HEADERS_DIR))
 
 
 def get_default_context():
     year = date.today().year
-    fullname = subprocess.check_output(
-        'git config --get user.name'.split()).strip()
-    email = subprocess.check_output(
-        'git config --get user.email'.split()).strip()
+    try:
+        fullname = subprocess.check_output(
+            'git config --get user.name'.split()
+        ).strip().decode('utf-8')
+    except:
+        print("WARNING: Please configure your git.\n")
+        fullname = getpass.getuser()
+    try:
+        email = subprocess.check_output(
+            'git config --get user.email'.split()
+        ).strip().decode('utf-8')
+    except:
+        print("WARNING: Please configure your git.\n")
+        email = "undefined"
     return {'year': year, 'fullname': fullname, 'email': email}
 
 
-def generate_file(name, user_context, is_license):
+def generate_file(name, context, is_license):
     if is_license == 0:
         if name not in HEADERS:
             raise ValueError(
@@ -63,9 +72,6 @@ def generate_file(name, user_context, is_license):
             raise ValueError("Unsuppport license: {0}".format(name))
         env = Environment(loader=FileSystemLoader(LICENSES_DIR))
     template = env.get_template(name)
-    context = get_default_context()
-    for key, value in user_context.items():
-        context[key] = value
     return template.render(**context)
 
 
@@ -76,14 +82,22 @@ def get_vars(name):
         env = Environment(loader=FileSystemLoader(LICENSES_DIR))
     template_source = env.loader.get_source(env, name)[0]
     parsed_content = env.parse(template_source)
-    variables = list(meta.find_undeclared_variables(parsed_content))
+    variables = sorted(list(meta.find_undeclared_variables(parsed_content)))
+    return variables
+
+
+def print_vars(name):
+    variables = get_vars(name)
     default_context = get_default_context()
-    result = ("The {0} template contains following "
-              "defaults:\n").format(string.upper(name))
-    for variable in variables:
-        result = result + "\t{0}: {1}\n".format(
-            variable,default_context[variable])
-    result = result + "You can overwrite them at your ease."
+    if len(variables) == 0:
+        return "The {0} template don't need variables.".format(name.upper())
+    else:
+        result = ("The {0} template contains following "
+                  "defaults:\n").format(name.upper())
+        for variable in variables:
+            result = result + "\t{0}: {1}\n".format(
+                variable, default_context[variable])
+        result = result + "You can overwrite them at your ease."
     return result
 
 
@@ -92,20 +106,27 @@ def main():
     raw_context = {'year': arguments['-y'],
                    'fullname': arguments['-f'],
                    'email': arguments['-e']}
-    user_context = {key: value for key, value in raw_context.items()
+    user_context = {key: value for (key, value) in raw_context.items()
                     if value is not None}
+    context = get_default_context()
+    # Overwrite the default value with user specified.
+    for (key, value) in user_context.items():
+        context[key] = value
+
     if arguments['--list'] and arguments['header']:
-        print ', '.join(HEADERS)
+        print(', '.join(HEADERS))
     elif arguments['--list']:
-        print ', '.join(LICENSES)
+        print(', '.join(LICENSES))
     elif arguments['LICENSE_HEADER']:
-        print generate_file(arguments['LICENSE_HEADER'], user_context, 0)
+        print(generate_file(arguments['LICENSE_HEADER'],
+                            context, 0))
     elif arguments['LICENSE_NAME']:
-        print generate_file(arguments['LICENSE_NAME'], user_context, 1)
+        print(generate_file(arguments['LICENSE_NAME'],
+                            context, 1))
     elif arguments['--var']:
-        print get_vars(arguments['NAME'])
+        print(print_vars(arguments['NAME']))
     else:
-        print __doc__
+        print(__doc__)
 
 
 if __name__ == '__main__':

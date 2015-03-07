@@ -1,0 +1,6 @@
+2015.03.03 v0.1.0
+
+- Initial release, feature support:
+    - list the supported license and header
+    - generate license and header
+    - list variables in the template
