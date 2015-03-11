@@ -2,7 +2,9 @@
 [![Latest Version][1]][2]
 [![Build Status][3]][4]
 
-Generate your license. Yet another [lice][5], but implement with Jinja.
+Generate your license. Yet another [lice][5], but implemented with Jinja2 and
+docopt, should be much more elegant and cleaner. I also get many inspirations
+from [joe][6](help you generate gitignore).
 
 ## Install
 
@@ -54,4 +56,5 @@ MIT.
 [3]: https://travis-ci.org/lord63/licen.svg
 [4]: https://travis-ci.org/lord63/licen
 [5]: https://github.com/licenses/lice
+[6]: https://github.com/karan/joe
 [gif]: https://github.com/lord63/licen/blob/master/licen_demo.gif
