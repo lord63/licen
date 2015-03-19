@@ -48,16 +48,16 @@ def get_default_context():
         fullname = subprocess.check_output(
             'git config --get user.name'.split()
         ).strip().decode('utf-8')
-    except:
-        print("WARNING: Please configure your git.\n")
-        fullname = getpass.getuser()
+    except Exception:
+        print("WARNING: Please configure your git. I need your user name.\n")
+        raise
     try:
         email = subprocess.check_output(
             'git config --get user.email'.split()
         ).strip().decode('utf-8')
-    except:
-        print("WARNING: Please configure your git.\n")
-        email = "undefined"
+    except Exception:
+        print("WARNING: Please configure your git. I need your email.\n")
+        raise
     return {'year': year, 'fullname': fullname, 'email': email}
 
 

@@ -12,6 +12,9 @@ from [joe][6](help you generate gitignore).
 
 ## Usage
 
+NOTE: because licen use the git configuration as default context, please make
+sure that you've set up git properly.
+
 A gif is worth than a thousand words.
 
 ![demo_gif][gif]
