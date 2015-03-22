@@ -12,8 +12,9 @@ from [joe][6](help you generate gitignore).
 
 ## Usage
 
-NOTE: because licen use the git configuration as default context, please make
-sure that you've set up git properly.
+NOTE: because licen use the git configuration(user.name and user.email) as
+default context, please make sure that you've set up git properly. You can
+check this [guide][] if you have done yet.
 
 A gif is worth than a thousand words.
 
@@ -60,4 +61,5 @@ MIT.
 [4]: https://travis-ci.org/lord63/licen
 [5]: https://github.com/licenses/lice
 [6]: https://github.com/karan/joe
+[guide]: https://help.github.com/articles/set-up-git/
 [gif]: https://github.com/lord63/licen/blob/master/licen_demo.gif
