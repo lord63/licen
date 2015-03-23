@@ -6,6 +6,21 @@ Generate your license. Yet another [lice][5], but implemented with Jinja2 and
 docopt, should be much more elegant and cleaner. I also get many inspirations
 from [joe][6](help you generate gitignore).
 
+## Why and what's the difference
+
+seems better than lice:
+
+* Licen use Jinja2 as its template engine, sweet and easy. Lice do it by hand.
+* Licen use docopt for the command line interface. Lice use argparse.
+* Licen don't render the boilerplate in the license template. Lice do. Check
+  out the issue [here][].
+* Licen is pep8 checked. Lice don't.
+
+seems not good as lice:
+
+* Licen support less licenses. Check [issue#1][]
+* Licen haven't support comment the license header yet. Check [issue#2][]
+
 ## Install
 
     $ pip install licen
@@ -63,3 +78,6 @@ MIT.
 [6]: https://github.com/karan/joe
 [guide]: https://help.github.com/articles/set-up-git/
 [gif]: https://github.com/lord63/licen/blob/master/licen_demo.gif
+[here]: https://github.com/licenses/lice/issues/44
+[issue#1]: https://github.com/lord63/licen/issues/1
+[issue#2]: https://github.com/lord63/licen/issues/2
