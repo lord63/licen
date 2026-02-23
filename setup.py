@@ -30,15 +30,17 @@ setup(
         'Operating System :: POSIX',
         'Operating System :: POSIX :: Linux',
         'License :: OSI Approved :: MIT License',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3'
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
     ],
     keywords='license generate cli',
+    python_requires='>=3.10',
     packages=['licen'],
     install_requires=['docopt==0.6.2',
-                      'jinja2>=2.7.3'
+                      'jinja2>=3.0'
     ],
     include_package_data=True,
     entry_points={
