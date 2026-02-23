@@ -42,3 +42,8 @@ packages = ["licen"]
 
 [tool.hatch.version]
 path = "licen/__init__.py"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+]
