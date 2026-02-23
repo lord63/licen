@@ -3,7 +3,7 @@ name = "licen"
 dynamic = ["version"]
 description = "Generate the license for you via command line"
 readme = "README.md"
-license = "MIT"
+license = { file = "LICENSE" }
 requires-python = ">=3.10"
 authors = [
     { name = "lord63", email = "lord63.j@gmail.com" },
@@ -23,12 +23,12 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 dependencies = [
-    "docopt==0.6.2",
+    "docopt-ng>=0.9.0",
     "jinja2>=3.0",
 ]
 
 [project.urls]
-Homepage = "http://github.com/lord63/licen"
+Homepage = "https://github.com/lord63/licen"
 
 [project.scripts]
 licen = "licen.main:main"
