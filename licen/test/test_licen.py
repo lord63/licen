@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-#  -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 
 import re
-import codecs
 
 from licen.main import *
 
@@ -21,7 +19,7 @@ class TestLicen():
                 file_path = path.join(HEADERS_DIR, name)
             else:
                 file_path = path.join(LICENSES_DIR, name)
-            with codecs.open(file_path, encoding='utf-8') as f:
+            with open(file_path, encoding='utf-8') as f:
                 content = f.read()
             variables = sorted(re.findall(r'(?<=\{\{ )\w+(?= \}\})', content))
             assert variables == get_vars(name)
@@ -30,7 +28,7 @@ class TestLicen():
         for license in LICENSES:
             license_path = path.join(LICENSES_DIR, license)
             context = get_default_context()
-            with codecs.open(license_path, encoding='utf-8') as f:
+            with open(license_path, encoding='utf-8') as f:
                 content = f.read()
             for var in re.findall(r'(?<=\{\{ )\w+(?= \}\})', content):
                 content = content.replace('{{{{ {0} }}}}'.format(var),
@@ -41,7 +39,7 @@ class TestLicen():
         for header in HEADERS:
             header_path = path.join(HEADERS_DIR, header)
             context = get_default_context()
-            with codecs.open(header_path, encoding='utf-8') as f:
+            with open(header_path, encoding='utf-8') as f:
                 content = f.read()
             for var in re.findall(r'(?<=\{\{ )\w+(?= \}\})', content):
                 content = content.replace('{{{{ {0} }}}}'.format(var),
